@@ -81,10 +81,15 @@ const { title } = Astro.props;
 
   :root {
     --background: #101010;
+    --background-strong: #0a0a0a;
     --sec: #a476ff;
     --white: #dfdfdf;
     --white-icon: #f3f3f398;
     --white-icon-tr: #f3f3f310;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   * {
@@ -96,6 +101,15 @@ const { title } = Astro.props;
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
   }
 
   *::selection {

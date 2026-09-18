@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes réalisations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0e14;
+    --bg-grid: #0d1219;
+    --surface: #11161f;
+    --surface-2: #151b26;
+    --border: #232c39;
+    --border-soft: #1a212c;
+    --text: #e6edf3;
+    --text-dim: #8b98a8;
+    --text-faint: #4b5563;
+    --root: #7aa2f7;
+    --web: #e0af68;
+    --other: #73daca;
+    --c1: #f7768e; /* Gestion de carrière */
+    --c2: #bb9af7; /* Calculateur */
+    --c3: #9ece6a; /* Librairie */
+    --c4: #ff9e64; /* Intersection */
+    --c5: #7dcfff; /* Portfolio OS */
+    --radius: 10px;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(122,162,247,0.10), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(122,162,247,0.10), transparent 60%),
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: auto, 42px 42px, 42px 42px;
+    background-position: 0 0, -1px -1px, -1px -1px;
+  }
+
+  section.wrap{
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 88px 24px 120px;
+  }
+
+  /* ---------- Header ---------- */
+  .head{
+    text-align:center;
+    margin-bottom: 76px;
+  }
+  .path-line{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-faint);
+    letter-spacing: .02em;
+    margin-bottom: 18px;
+  }
+  .path-line .sep{ color: var(--border); margin: 0 2px; }
+  .path-line .hi{ color: var(--other); }
+
+  h1.title{
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: clamp(28px, 4.4vw, 46px);
+    line-height: 1.25;
+    margin: 0;
+    white-space: nowrap;
+    display:inline-flex;
+    align-items:baseline;
+    gap: 2px;
+  }
+  h1.title .cmt{ color: var(--text-faint); font-weight: 500; }
+  h1.title .typed{
+    color: var(--text);
+    border-right: 2px solid var(--other);
+    animation: caret 0.9s steps(1) infinite;
+    padding-right: 4px;
+  }
+  @keyframes caret{ 50%{ border-color: transparent; } }
+
+  .sub{
+    margin-top: 14px;
+    color: var(--text-dim);
+    font-size: 15px;
+    font-family: var(--sans);
+  }
+
+  /* ---------- Tree ---------- */
+  .tree{
+    position: relative;
+  }
+  svg.links{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+    pointer-events:none;
+    z-index:0;
+  }
+  svg.links path{
+    fill:none;
+    stroke-width:1.6;
+    stroke-linecap:round;
+  }
+
+  .root-row{
+    display:flex;
+    justify-content:center;
+    margin-bottom: 54px;
+    position:relative;
+    z-index:2;
+  }
+  .node{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding: 11px 18px;
+    background: var(--surface);
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight:600;
+    letter-spacing:.01em;
+    opacity:0;
+    transform: translateY(-10px) scale(.94);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .tree.in .root-node{
+    animation: popIn .5s cubic-bezier(.2,.7,.3,1.2) forwards;
+  }
+  @keyframes popIn{
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+  .folder-ico{
+    width:16px; height:13px;
+    border-radius: 2px 4px 4px 4px;
+    position:relative;
+    flex:none;
+  }
+  .folder-ico::before{
+    content:"";
+    position:absolute;
+    top:-4px; left:0;
+    width:8px; height:4px;
+    border-radius: 3px 3px 0 0;
+    background:inherit;
+  }
+  .root-node{ color: var(--root); }
+  .root-node .folder-ico{ background: color-mix(in srgb, var(--root) 30%, transparent); }
+  .root-node .folder-ico::before{ background: color-mix(in srgb, var(--root) 45%, transparent); }
+
+  .branches{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 46px;
+    position:relative;
+    z-index:2;
+  }
+
+  .col{ min-width:0; }
+
+  .folder-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom: 22px;
+    justify-content:center;
+  }
+  .folder-head .node{ transition-delay: .05s; }
+  .col[data-col="web"] .node{ color: var(--web); }
+  .col[data-col="web"] .node .folder-ico{ background: color-mix(in srgb, var(--web) 30%, transparent); }
+  .col[data-col="web"] .node .folder-ico::before{ background: color-mix(in srgb, var(--web) 45%, transparent); }
+  .col[data-col="other"] .node{ color: var(--other); }
+  .col[data-col="other"] .node .folder-ico{ background: color-mix(in srgb, var(--other) 30%, transparent); }
+  .col[data-col="other"] .node .folder-ico::before{ background: color-mix(in srgb, var(--other) 45%, transparent); }
+
+  .tree.in .folder-head .node{ animation: popIn .5s cubic-bezier(.2,.7,.3,1.2) forwards; animation-delay: .38s; }
+
+  .cards{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    position:relative;
+    padding-left: 20px;
+  }
+  /* elbow tree connector */
+  .cards::before{
+    content:"";
+    position:absolute;
+    left:0; top:0;
+    width:1px;
+    height:0%;
+    background: var(--border);
+    transition: height .5s ease;
+  }
+  .tree.in .cards::before{ height: calc(100% - 20px); transition-delay: .55s; }
+
+  .card{
+    position:relative;
+    background: var(--surface);
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px 16px;
+    opacity:0;
+    transform: translate(-14px, 8px);
+    transition: transform .45s cubic-bezier(.2,.7,.2,1), opacity .45s ease,
+                border-color .25s ease, box-shadow .25s ease, background .25s ease;
+    --accent: var(--text);
+  }
+  .card::before{
+    /* elbow twig */
+    content:"";
+    position:absolute;
+    left:-20px; top:24px;
+    width:16px; height:1px;
+    background: var(--border);
+    transform: scaleX(0);
+    transform-origin:left;
+    transition: transform .3s ease;
+  }
+  .tree.in .card{ animation: cardIn .55s cubic-bezier(.16,.8,.24,1) forwards; }
+  .tree.in .card::before{ transform: scaleX(1); transition-delay: inherit; }
+  @keyframes cardIn{ to{ opacity:1; transform: translate(0,0); } }
+
+  .col[data-col="web"] .card:nth-child(1){ animation-delay:.62s; }
+  .col[data-col="web"] .card:nth-child(1)::before{ transition-delay:.62s; }
+  .col[data-col="web"] .card:nth-child(2){ animation-delay:.76s; }
+  .col[data-col="web"] .card:nth-child(2)::before{ transition-delay:.76s; }
+  .col[data-col="web"] .card:nth-child(3){ animation-delay:.90s; }
+  .col[data-col="web"] .card:nth-child(3)::before{ transition-delay:.90s; }
+  .col[data-col="other"] .card:nth-child(1){ animation-delay:.62s; }
+  .col[data-col="other"] .card:nth-child(1)::before{ transition-delay:.62s; }
+  .col[data-col="other"] .card:nth-child(2){ animation-delay:.76s; }
+  .col[data-col="other"] .card:nth-child(2)::before{ transition-delay:.76s; }
+
+  .card::after{
+    content:"";
+    position:absolute;
+    left:0; top:14px; bottom:14px;
+    width:3px;
+    border-radius:3px;
+    background: var(--accent);
+    opacity:.55;
+    transition: opacity .25s ease, box-shadow .25s ease;
+  }
+  .card:hover{
+    transform: translate(0,-3px);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    box-shadow: 0 10px 28px -14px color-mix(in srgb, var(--accent) 55%, transparent);
+    background: var(--surface-2);
+  }
+  .card:hover::after{ opacity:1; box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent); }
+
+  .card-head{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:8px;
+  }
+  .file-ico{
+    flex:none;
+    width:14px; height:14px;
+    border-radius:3px;
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    transition: transform .3s ease;
+  }
+  .card:hover .file-ico{ transform: rotate(-8deg) scale(1.08); }
+  .card-title{
+    font-family: var(--mono);
+    font-weight:600;
+    font-size: 15px;
+    color: var(--text);
+    letter-spacing:.01em;
+  }
+
+  .card-desc{
+    font-size: 13.5px;
+    line-height:1.55;
+    color: var(--text-dim);
+    margin: 0 0 14px;
+  }
+
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom: 14px;
+  }
+  .tag{
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 5px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    color: var(--text-dim);
+    white-space:nowrap;
+  }
+  .card:hover .tag{ border-color: color-mix(in srgb, var(--accent) 25%, var(--border-soft)); }
+
+  .actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    padding-top:12px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family: var(--sans);
+    font-size:12px;
+    font-weight:600;
+    color: var(--text-dim);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 6px 11px;
+    border-radius: 6px;
+    text-decoration:none;
+    transition: color .2s ease, border-color .2s ease, background .2s ease, transform .15s ease;
+  }
+  .btn svg{ width:12px; height:12px; flex:none; }
+  .btn:hover{
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    transform: translateY(-1px);
+  }
+  .btn.gh:hover{ color:#fff; border-color:#e6edf3; background: rgba(255,255,255,.06); }
+
+  /* accent bindings */
+  .card[data-c="c1"]{ --accent: var(--c1); }
+  .card[data-c="c2"]{ --accent: var(--c2); }
+  .card[data-c="c3"]{ --accent: var(--c3); }
+  .card[data-c="c4"]{ --accent: var(--c4); }
+  .card[data-c="c5"]{ --accent: var(--c5); }
+
+  @media (max-width: 760px){
+    .branches{ grid-template-columns: 1fr; gap:40px; }
+    section.wrap{ padding: 64px 18px 90px; }
+    h1.title{ white-space:normal; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .node, .card, .cards::before, .card::before{ animation:none !important; transition:none !important; opacity:1 !important; transform:none !important; }
+    h1.title .typed{ border-right:none; animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<section class="wrap">
+  <div class="head">
+    <div class="path-line">~/<span class="hi">portfolio</span><span class="sep">/</span>projects<span class="sep">.</span>show()</div>
+    <h1 class="title"><span class="cmt">// </span><span class="typed" id="typed"></span></h1>
+    <p class="sub">Une arborescence de ce que j'ai construit — du front au back, en passant par quelques expériences à part.</p>
+  </div>
+
+  <div class="tree" id="tree">
+    <svg class="links" id="links"><path id="pathWeb"/><path id="pathOther"/></svg>
+
+    <div class="root-row">
+      <div class="node root-node" id="rootNode">
+        <span class="folder-ico"></span>mes-projets
+      </div>
+    </div>
+
+    <div class="branches">
+      <div class="col" data-col="web">
+        <div class="folder-head">
+          <div class="node" id="webNode"><span class="folder-ico"></span>web</div>
+        </div>
+        <div class="cards">
+
+          <article class="card" data-c="c1">
+            <div class="card-head"><span class="file-ico"></span><span class="card-title">Gestion de carrière &amp; IA</span></div>
+            <p class="card-desc">Application fullstack de gestion RH notée Excellent. Authentification Spring Security + reCAPTCHA, dashboard prédictif TensorFlow, tests Cypress en sprints Agile/Scrum.</p>
+            <div class="tags">
+              <span class="tag">Angular / PrimeNG</span><span class="tag">Spring Boot</span><span class="tag">TensorFlow</span><span class="tag">Cypress</span><span class="tag">PostgreSQL</span>
+            </div>
+            <div class="actions">
+              <a class="btn" href="#" onclick="return false">Front</a>
+              <a class="btn" href="#" onclick="return false">Backend</a>
+            </div>
+          </article>
+
+          <article class="card" data-c="c2">
+            <div class="card-head"><span class="file-ico"></span><span class="card-title">Calculateur de Taxe Locale</span></div>
+            <p class="card-desc">API REST sécurisée JWT + Spring Security, déploiement complet en production (Railway / Netlify / Neon) et pipeline CI/CD GitHub Actions avec tests JUnit/Mockito.</p>
+            <div class="tags">
+              <span class="tag">Angular</span><span class="tag">Spring Boot</span><span class="tag">JWT / Security</span><span class="tag">GitHub Actions</span><span class="tag">PostgreSQL Neon</span>
+            </div>
+            <div class="actions">
+              <a class="btn" href="#" onclick="return false">Front</a>
+              <a class="btn" href="#" onclick="return false">Backend</a>
+            </div>
+          </article>
+
+          <article class="card" data-c="c3">
+            <div class="card-head"><span class="file-ico"></span><span class="card-title">Librairie Next-Gen</span></div>
+            <p class="card-desc">Site e-commerce avec espaces client et admin distincts. Catalogue, commandes, avis, réclamations et paiement en ligne sécurisé via Stripe.</p>
+            <div class="tags">
+              <span class="tag">Symfony</span><span class="tag">Stripe</span><span class="tag">MySQL</span><span class="tag">JavaScript</span>
+            </div>
+            <div class="actions">
+              <a class="btn gh" href="#" onclick="return false">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+                GitHub
+              </a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <div class="col" data-col="other">
+        <div class="folder-head">
+          <div class="node" id="otherNode"><span class="folder-ico"></span>other</div>
+        </div>
+        <div class="cards">
+
+          <article class="card" data-c="c4">
+            <div class="card-head"><span class="file-ico"></span><span class="card-title">Intersection Intelligente</span></div>
+            <p class="card-desc">Simulation temps réel d'une intersection à 4 voies : feux adaptatifs (10-35s), priorité ambulance, gestion piéton, météo et détection de collisions. Architecture MVC.</p>
+            <div class="tags">
+              <span class="tag">Python</span><span class="tag">Pygame</span><span class="tag">NumPy</span><span class="tag">SQLite</span>
+            </div>
+            <div class="actions">
+              <a class="btn gh" href="#" onclick="return false">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+                GitHub
+              </a>
+            </div>
+          </article>
+
+          <article class="card" data-c="c5">
+            <div class="card-head"><span class="file-ico"></span><span class="card-title">Portfolio OS</span></div>
+            <p class="card-desc">Portfolio interactif façon système d'exploitation. Interface desktop avec fenêtres draggables, dock et navigation immersive.</p>
+            <div class="tags">
+              <span class="tag">React</span><span class="tag">CSS</span><span class="tag">Netlify</span>
+            </div>
+            <div class="actions">
+              <a class="btn gh" href="#" onclick="return false">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+                GitHub
+              </a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Typewriter title
+  (function(){
+    var txt = "Mes réalisations";
+    var el = document.getElementById('typed');
+    var i = 0;
+    function tick(){
+      if(i <= txt.length){
+        el.textContent = txt.slice(0,i);
+        i++;
+        setTimeout(tick, 42);
+      }
+    }
+    tick();
+  })();
+
+  // Draw root -> folder branch curves, responsive
+  function drawLinks(){
+    var tree = document.getElementById('tree');
+    var svg = document.getElementById('links');
+    var treeRect = tree.getBoundingClientRect();
+    var root = document.getElementById('rootNode').getBoundingClientRect();
+    var web = document.getElementById('webNode').getBoundingClientRect();
+    var other = document.getElementById('otherNode').getBoundingClientRect();
+
+    var stacked = web.top - root.bottom < 4; // mobile stacked layout heuristic
+    var x0 = root.left + root.width/2 - treeRect.left;
+    var y0 = root.bottom - treeRect.top;
+
+    function pathTo(target){
+      var x1 = target.left + target.width/2 - treeRect.left;
+      var y1 = target.top - treeRect.top;
+      var midY = y0 + (y1 - y0) * 0.55;
+      return "M "+x0+" "+y0+" C "+x0+" "+midY+", "+x1+" "+midY+", "+x1+" "+y1;
+    }
+
+    var pWeb = document.getElementById('pathWeb');
+    var pOther = document.getElementById('pathOther');
+    pWeb.setAttribute('d', pathTo(web));
+    pOther.setAttribute('d', pathTo(other));
+    pWeb.style.stroke = getComputedStyle(document.documentElement).getPropertyValue('--web');
+    pOther.style.stroke = getComputedStyle(document.documentElement).getPropertyValue('--other');
+
+    [pWeb,pOther].forEach(function(p){
+      var len = p.getTotalLength();
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len;
+    });
+  }
+
+  function playLinks(){
+    ['pathWeb','pathOther'].forEach(function(id, idx){
+      var p = document.getElementById(id);
+      requestAnimationFrame(function(){
+        p.style.transition = 'stroke-dashoffset .7s cubic-bezier(.3,.7,.2,1)';
+        p.style.transitionDelay = (0.12 + idx*0.05)+'s';
+        p.style.strokeDashoffset = 0;
+      });
+    });
+  }
+
+  window.addEventListener('load', function(){
+    drawLinks();
+  });
+  window.addEventListener('resize', function(){
+    drawLinks();
+  });
+
+  var tree = document.getElementById('tree');
+  var played = false;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting && !played){
+        played = true;
+        drawLinks();
+        tree.classList.add('in');
+        setTimeout(playLinks, 60);
+        io.disconnect();
+      }
+    });
+  }, { threshold: 0.2 });
+  io.observe(tree);
+</script>
+
+</body>
+</html>
