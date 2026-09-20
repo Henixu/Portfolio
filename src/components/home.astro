@@ -1,6 +1,12 @@
 ---
 import LetterGlitch from "../React/LetterGlitch.tsx";
 import SkillsList from "../React/SkillsList.tsx";
+
+const roles = [
+  "Data Science & AI Engineering Student",
+  "Full Stack Developer",
+  "Machine Learning Practitioner",
+];
 ---
 
 <section class="text-[var(--white)] mt-12 md:mt-0" id="home">
@@ -15,8 +21,9 @@ import SkillsList from "../React/SkillsList.tsx";
         <h1
           class="text-[var(--white)] text-4xl md:text-5xl font-medium text-pretty leading-tight lg:basis-1/2 lg:shrink-0 min-h-[4.2em] sm:min-h-[2.8em] lg:min-h-[4.2em]"
         >
-          <span id="role-typed"></span><span class="type-caret" aria-hidden="true"
-          ></span>
+          <span id="role-typed" data-roles={JSON.stringify(roles)}
+            >{roles[0]}</span
+          ><span class="type-caret" aria-hidden="true"></span>
         </h1>
         <p class="text-md md:text-2xl text-[var(--white-icon)]">
           I build <span class="text-[var(--sec)] shiny-sec">full stack</span> applications
@@ -100,39 +107,33 @@ import SkillsList from "../React/SkillsList.tsx";
 
 <script>
   const typed = document.getElementById("role-typed");
-  const roles = [
-    "Data Science & AI Engineering Student",
-    "Full Stack Developer",
-    "Machine Learning Practitioner",
-  ];
+  const roles: string[] = JSON.parse(typed?.dataset.roles || "[]");
 
-  if (typed) {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      typed.textContent = roles[0];
-    } else {
-      let roleIndex = 0;
-      let count = 0;
-      let deleting = false;
+  if (typed && roles.length) {
+    let roleIndex = 0;
+    // The first role is server-rendered, so pick up mid-cycle: hold it,
+    // then start deleting. The headline is never blank, even without JS.
+    let count = roles[0].length;
+    let deleting = true;
 
-      const tick = () => {
-        const role = roles[roleIndex];
-        count += deleting ? -1 : 1;
-        typed.textContent = role.slice(0, count);
+    const tick = () => {
+      const role = roles[roleIndex];
+      count += deleting ? -1 : 1;
+      typed.textContent = role.slice(0, count);
 
-        if (!deleting && count === role.length) {
-          deleting = true;
-          window.setTimeout(tick, 2400);
-        } else if (deleting && count === 0) {
-          deleting = false;
-          roleIndex = (roleIndex + 1) % roles.length;
-          window.setTimeout(tick, 350);
-        } else {
-          window.setTimeout(tick, deleting ? 35 : 75);
-        }
-      };
+      if (!deleting && count === role.length) {
+        deleting = true;
+        window.setTimeout(tick, 2400);
+      } else if (deleting && count === 0) {
+        deleting = false;
+        roleIndex = (roleIndex + 1) % roles.length;
+        window.setTimeout(tick, 350);
+      } else {
+        window.setTimeout(tick, deleting ? 35 : 75);
+      }
+    };
 
-      tick();
-    }
+    window.setTimeout(tick, 2400);
   }
 </script>
 
@@ -150,12 +151,6 @@ import SkillsList from "../React/SkillsList.tsx";
   @keyframes type-caret-blink {
     50% {
       opacity: 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .type-caret {
-      animation: none;
     }
   }
 
