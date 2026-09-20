@@ -13,40 +13,40 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: "Gestion de carrière & IA",
+    title: "Career Management & AI",
     category: "WEB",
     description:
-      "Application fullstack de gestion RH notée Excellent. Authentification Spring Security + reCAPTCHA, dashboard prédictif TensorFlow, tests Cypress en sprints Agile/Scrum.",
+      "Fullstack HR management app graded Excellent. Spring Security + reCAPTCHA authentication, TensorFlow predictive dashboard, Cypress tests run in Agile/Scrum sprints.",
     accent: "#f7768e",
     badge: "WEB",
     technologies: ["Angular", "PrimeNG", "Spring Boot", "TensorFlow", "PostgreSQL"],
-    action: "Front",
+    action: "Frontend",
   },
   {
-    title: "Calculateur de Taxe Locale",
+    title: "Local Tax Calculator",
     category: "WEB",
     description:
-      "API REST sécurisée JWT + Spring Security, déploiement complet en production (Railway / Netlify / Neon) et pipeline CI/CD GitHub Actions avec tests JUnit/Mockito.",
+      "REST API secured with JWT + Spring Security, full production deployment (Railway / Netlify / Neon) and a GitHub Actions CI/CD pipeline with JUnit/Mockito tests.",
     accent: "#bb9af7",
     badge: "WEB",
     technologies: ["Angular", "Spring Boot", "JWT / Security", "GitHub Actions", "PostgreSQL Neon"],
     action: "Backend",
   },
   {
-    title: "Librairie Next-Gen",
+    title: "Next-Gen Bookstore",
     category: "WEB",
     description:
-      "Site e-commerce avec espaces client et admin distincts. Catalogue, commandes, avis, réclamations et paiement en ligne sécurisé via Stripe.",
+      "E-commerce site with separate customer and admin areas. Catalog, orders, reviews, claims and secure online payment through Stripe.",
     accent: "#9ece6a",
     badge: "WEB",
     technologies: ["Symfony", "Stripe", "MySQL", "JavaScript"],
     action: "GitHub",
   },
   {
-    title: "Intersection Intelligente",
+    title: "Smart Intersection",
     category: "OTHER",
     description:
-      "Simulation temps réel d'une intersection à 4 voies : feux adaptatifs, priorité ambulance, gestion piéton, météo et détection de collisions. Architecture MVC.",
+      "Real-time simulation of a 4-way intersection: adaptive traffic lights, ambulance priority, pedestrian handling, weather and collision detection. MVC architecture.",
     accent: "#ff9e64",
     badge: "OTHER",
     technologies: ["Python", "Pygame", "NumPy", "SQLite"],
@@ -56,7 +56,7 @@ const projects: Project[] = [
     title: "Portfolio OS",
     category: "OTHER",
     description:
-      "Portfolio interactif façon système d'exploitation. Interface desktop avec fenêtres draggables, dock et navigation immersive.",
+      "Interactive portfolio built like an operating system. Desktop interface with draggable windows, a dock and immersive navigation.",
     accent: "#7dcfff",
     badge: "OTHER",
     technologies: ["React", "CSS", "Netlify"],
@@ -78,7 +78,7 @@ export default function ProjectsShowcase() {
   const otherRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const title = "Mes réalisations";
+    const title = "What I have built";
     let index = 0;
 
     const tick = () => {
@@ -93,15 +93,16 @@ export default function ProjectsShowcase() {
   }, []);
 
   useEffect(() => {
+    const tree = treeRef.current;
+    const root = rootRef.current;
+    const web = webRef.current;
+    const other = otherRef.current;
+    if (!tree || !root || !web || !other) return;
+
     const updatePaths = () => {
-      const tree = treeRef.current;
-      const root = rootRef.current;
-      const web = webRef.current;
-      const other = otherRef.current;
       const webPath = document.getElementById("pathWeb") as SVGPathElement | null;
       const otherPath = document.getElementById("pathOther") as SVGPathElement | null;
-
-      if (!tree || !root || !web || !other || !webPath || !otherPath) return;
+      if (!webPath || !otherPath) return;
 
       const treeRect = tree.getBoundingClientRect();
       const rootRect = root.getBoundingClientRect();
@@ -118,44 +119,78 @@ export default function ProjectsShowcase() {
         return `M ${x0} ${y0} C ${x0} ${midY}, ${x1} ${midY}, ${x1} ${y1}`;
       };
 
+      // Preserve the revealed state across recomputes (e.g. window resize)
+      // instead of re-hiding an already-drawn line.
+      const wasRevealed = webPath.style.strokeDashoffset === "0";
+
       webPath.setAttribute("d", pathTo(webRect));
       otherPath.setAttribute("d", pathTo(otherRect));
 
       const lenWeb = webPath.getTotalLength();
       const lenOther = otherPath.getTotalLength();
       webPath.style.strokeDasharray = `${lenWeb}`;
-      webPath.style.strokeDashoffset = `${lenWeb}`;
       otherPath.style.strokeDasharray = `${lenOther}`;
-      otherPath.style.strokeDashoffset = `${lenOther}`;
+      webPath.style.strokeDashoffset = wasRevealed ? "0" : `${lenWeb}`;
+      otherPath.style.strokeDashoffset = wasRevealed ? "0" : `${lenOther}`;
     };
 
-    updatePaths();
-    window.addEventListener("resize", updatePaths);
-    return () => window.removeEventListener("resize", updatePaths);
-  }, []);
+    const scheduleUpdate = () => {
+      requestAnimationFrame(updatePaths);
+    };
 
-  useEffect(() => {
-    const tree = treeRef.current;
-    if (!tree) return;
+    // Recompute right before revealing: layout can still be settling
+    // (fonts, scroll, entrance transforms) well after mount, so the shape
+    // must be refreshed at the moment it's actually drawn.
+    const revealPaths = () => {
+      updatePaths();
+      const webPath = document.getElementById("pathWeb") as SVGPathElement | null;
+      const otherPath = document.getElementById("pathOther") as SVGPathElement | null;
+      if (!webPath || !otherPath) return;
 
-    const observer = new IntersectionObserver(
+      webPath.style.transition = "stroke-dashoffset 0.7s cubic-bezier(0.3, 0.7, 0.2, 1)";
+      otherPath.style.transition = "stroke-dashoffset 0.7s cubic-bezier(0.3, 0.7, 0.2, 1)";
+      webPath.style.transitionDelay = "0.12s";
+      otherPath.style.transitionDelay = "0.18s";
+
+      requestAnimationFrame(() => {
+        webPath.style.strokeDashoffset = "0";
+        otherPath.style.strokeDashoffset = "0";
+      });
+    };
+
+    scheduleUpdate();
+    window.addEventListener("resize", scheduleUpdate);
+
+    const resizeObserver = new ResizeObserver(() => scheduleUpdate());
+    resizeObserver.observe(tree);
+    [root, web, other].forEach((node) => resizeObserver.observe(node));
+
+    const revealTimer = window.setTimeout(revealPaths, 120);
+
+    const intersectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             tree.classList.add("project-showcase__tree--in");
-            observer.disconnect();
+            revealPaths();
+            intersectionObserver.disconnect();
           }
         });
       },
       { threshold: 0.2 },
     );
+    intersectionObserver.observe(tree);
 
-    observer.observe(tree);
-    return () => observer.disconnect();
+    return () => {
+      resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      window.clearTimeout(revealTimer);
+      window.removeEventListener("resize", scheduleUpdate);
+    };
   }, []);
 
   return (
-    <div className="project-showcase" ref={treeRef}>
+    <div className="project-showcase">
       <div className="project-showcase__header">
         <div className="project-showcase__path-line">
           ~/ <span className="project-showcase__path-highlight">portfolio</span>
@@ -169,12 +204,12 @@ export default function ProjectsShowcase() {
         </h2>
 
         <p className="project-showcase__sub">
-          Une arborescence de ce que j&apos;ai construit — du front au back, en passant par quelques
-          expériences à part.
+          A directory tree of what I have built — from frontend to backend, with a few
+          side experiments along the way.
         </p>
       </div>
 
-      <div className="project-showcase__tree">
+      <div className="project-showcase__tree" ref={treeRef}>
         <svg className="project-showcase__links" aria-hidden="true">
           <path id="pathWeb" />
           <path id="pathOther" />
@@ -183,7 +218,7 @@ export default function ProjectsShowcase() {
         <div className="project-showcase__root-row">
           <div className="project-showcase__node project-showcase__root-node" ref={rootRef}>
             <span className="project-showcase__folder-ico" />
-            mes-projets
+            my-projects
           </div>
         </div>
 
@@ -360,6 +395,7 @@ export default function ProjectsShowcase() {
 
         .project-showcase__tree {
           position: relative;
+          z-index: 1;
         }
 
         .project-showcase__links {
@@ -369,7 +405,7 @@ export default function ProjectsShowcase() {
           height: 100%;
           overflow: visible;
           pointer-events: none;
-          z-index: 0;
+          z-index: 2;
         }
 
         .project-showcase__links path {
@@ -385,7 +421,7 @@ export default function ProjectsShowcase() {
           justify-content: center;
           margin-bottom: 54px;
           position: relative;
-          z-index: 2;
+          z-index: 3;
         }
 
         .project-showcase__node {
@@ -456,11 +492,12 @@ export default function ProjectsShowcase() {
           grid-template-columns: 1fr 1fr;
           gap: 46px;
           position: relative;
-          z-index: 2;
+          z-index: 1;
         }
 
         .project-showcase__col {
           min-width: 0;
+          position: relative;
         }
 
         .project-showcase__folder-head {
@@ -469,6 +506,7 @@ export default function ProjectsShowcase() {
           gap: 10px;
           margin-bottom: 22px;
           justify-content: center;
+          position: relative;
         }
 
         .project-showcase__col[data-col="web"] .project-showcase__node {
