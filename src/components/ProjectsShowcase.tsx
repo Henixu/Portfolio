@@ -8,59 +8,69 @@ type Project = {
   accent: string;
   badge: string;
   technologies: string[];
-  action: string;
+  repository: string;
 };
 
 const projects: Project[] = [
   {
-    title: "Career Management & AI",
+    title: "SopraHR Interne",
     category: "WEB",
     description:
-      "Fullstack HR management app graded Excellent. Spring Security + reCAPTCHA authentication, TensorFlow predictive dashboard, Cypress tests run in Agile/Scrum sprints.",
+      "Internal company management platform centralizing employee information and activities in one application.",
     accent: "#f7768e",
     badge: "WEB",
-    technologies: ["Angular", "PrimeNG", "Spring Boot", "TensorFlow", "PostgreSQL"],
-    action: "Frontend",
+    technologies: ["Angular", "Spring Boot", "PostgreSQL"],
+    repository: "https://github.com/Henixu/PFE_AI_Project/tree/master",
   },
   {
-    title: "Local Tax Calculator",
+    title: "SmartBike AI",
     category: "WEB",
     description:
-      "REST API secured with JWT + Spring Security, full production deployment (Railway / Netlify / Neon) and a GitHub Actions CI/CD pipeline with JUnit/Mockito tests.",
+      "Smart bike rental platform for finding, reserving, paying for, and renting bikes, with machine learning demand predictions for station management.",
     accent: "#bb9af7",
     badge: "WEB",
-    technologies: ["Angular", "Spring Boot", "JWT / Security", "GitHub Actions", "PostgreSQL Neon"],
-    action: "Backend",
+    technologies: ["Machine Learning", "Bike Rental", "Reservations", "Payments"],
+    repository: "https://github.com/Henixu/SmartBike-AI",
   },
   {
-    title: "Next-Gen Bookstore",
+    title: "Nidix CarRAG Studio",
     category: "WEB",
     description:
-      "E-commerce site with separate customer and admin areas. Catalog, orders, reviews, claims and secure online payment through Stripe.",
+      "Local car knowledge assistant that indexes vehicle records or text sources and answers questions using only retrieved context from a local language model.",
     accent: "#9ece6a",
     badge: "WEB",
-    technologies: ["Symfony", "Stripe", "MySQL", "JavaScript"],
-    action: "GitHub",
+    technologies: ["FastAPI", "MongoDB", "Ollama", "RAG"],
+    repository: "https://github.com/Henixu/Nidix-Ai",
   },
   {
-    title: "Smart Intersection",
+    title: "TounesPrix",
+    category: "WEB",
+    description:
+      "Tunisian technology price-comparison platform that collects, normalizes, and matches product listings from local online stores.",
+    accent: "#7aa2f7",
+    badge: "WEB",
+    technologies: ["Next.js", "Express", "MongoDB", "Web Scraping"],
+    repository: "https://github.com/Henixu/tounesprix",
+  },
+  {
+    title: "Spoortify",
     category: "OTHER",
     description:
-      "Real-time simulation of a 4-way intersection: adaptive traffic lights, ambulance priority, pedestrian handling, weather and collision detection. MVC architecture.",
+      "Real-time competitive fitness game where two players battle in a push-up challenge, with on-device MediaPipe Pose counting repetitions without recording video.",
     accent: "#ff9e64",
     badge: "OTHER",
-    technologies: ["Python", "Pygame", "NumPy", "SQLite"],
-    action: "GitHub",
+    technologies: ["MediaPipe Pose", "Computer Vision", "Real-time", "Fitness"],
+    repository: "https://github.com/Henixu/spoortify",
   },
   {
-    title: "Portfolio OS",
+    title: "Mega CV",
     category: "OTHER",
     description:
-      "Interactive portfolio built like an operating system. Desktop interface with draggable windows, a dock and immersive navigation.",
+      "AI-assisted job application toolkit that evaluates job links and generates tailored ATS-friendly CVs in PDF and DOCX with a cover letter.",
     accent: "#7dcfff",
     badge: "OTHER",
-    technologies: ["React", "CSS", "Netlify"],
-    action: "GitHub",
+    technologies: ["Claude Code", "ATS", "PDF", "DOCX"],
+    repository: "https://github.com/Henixu/mega-cv",
   },
 ];
 
@@ -261,10 +271,12 @@ export default function ProjectsShowcase() {
                     </div>
 
                     <div className="project-showcase__actions">
-                      <a href="#" className="project-showcase__btn">
-                        {project.action}
-                      </a>
-                      <a href="#" className="project-showcase__btn project-showcase__btn--gh">
+                      <a
+                        href={project.repository}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="project-showcase__btn project-showcase__btn--gh"
+                      >
                         GitHub
                       </a>
                     </div>
@@ -311,10 +323,12 @@ export default function ProjectsShowcase() {
                     </div>
 
                     <div className="project-showcase__actions">
-                      <a href="#" className="project-showcase__btn">
-                        {project.action}
-                      </a>
-                      <a href="#" className="project-showcase__btn project-showcase__btn--gh">
+                      <a
+                        href={project.repository}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="project-showcase__btn project-showcase__btn--gh"
+                      >
                         GitHub
                       </a>
                     </div>
